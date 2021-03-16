@@ -1,6 +1,8 @@
 import pygame
 
 from scripts.player import Player
+from scripts.human import Human
+from scripts.building import Building
 from scripts.tilemap import *
 from scripts.camera import Camera
 
@@ -13,18 +15,28 @@ class App:
     def generate(self):
         self.sprites_group = pygame.sprite.Group()
         self.chunks_group = pygame.sprite.Group()
+        self.builds_group = pygame.sprite.Group()
         self.player = Player(self.sprites_group, (0,0), (25,25), (0,0,255))
+        self.human = Human(self.sprites_group, "test_1")
         self.chunks = generate_chunk(self.chunks_group, generate_map())
-        self.camera = Camera(self.player, 640, 480, self.chunks_group)
+        self.camera = Camera(self.human, 640, 480, self.chunks_group)
+        self.building = Building(self)
+
 
     def handle_event(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.running = False        
+                self.running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_b:
+                    print("basti")
+                    if self.building.active: self.building.active = False
+                    else: self.building.active = True
 
     def draw(self):
-        self.display.fill((255,255,255))
+        self.display.fill((0,0,0))
         draw_map(self.display, self.chunks, self.camera)
+        self.building.draw()
         for sprite in self.sprites_group:
             self.display.blit(sprite.image, (sprite.rect.topleft + self.camera.offset))
 

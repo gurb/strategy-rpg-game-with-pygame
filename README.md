@@ -7,3 +7,4 @@ timizations are implemented to the game to obtain better performance.
 - reduce the CPU usage of the game (RAM seems stable)
 - add a minimap when will open the character moved
 - add some buildings and trees(collideable) (as generated)
+- meta of human .......................................... 0%

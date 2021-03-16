@@ -71,4 +71,55 @@ def generate_iso_tex(texture=None, color_m=None, w=16, h=8, is_rect=False, pos=(
         surf_rect.y = pos[1]
         return (iso_pixel, surf_rect)
     else:
-        return iso_pixel  
+        return iso_pixel
+
+
+def generate_tex(texture=None, color_m=None, pixels_len=16, pixel_size=4, is_rect=False, smooth_val = 125, pos = (0,0), obj_array=None, alpha=False):
+    if alpha:
+        surf = pygame.Surface([pixels_len, pixels_len])
+        surf.fill((255,255,255))
+    else:
+        surf = pygame.Surface([pixels_len, pixels_len])
+    pixel_array = pygame.PixelArray(surf)
+    alpha_pixel = False
+    for col in range(16):
+        for row in range(16):
+            if texture:
+                if texture == _textures['grass']:
+                    color = 0x78955A
+                if texture == _textures['dirt']:
+                    color = 0x9b7653
+                if texture == _textures['brick']:
+                    color = 0xB53A15
+                    if col % 4 == 1:
+                        color = 0xBCAFA5 # Beige brick spacing
+            elif obj_array is not None:
+                if obj_array[col][row] == 11:
+                    color = 0x000000
+                    alpha_pixel = False
+                if obj_array[col][row] == 100:
+                    alpha_pixel = True
+            elif color_m:
+                color = color_m
+
+            if not alpha_pixel:
+                red     = (((color >> 16) & 0xff) * random.randint(smooth_val,255)//255) << 16
+                green   = (((color >> 8)  & 0xff) * random.randint(smooth_val,255)//255) << 8
+                blue    = (((color >> 0)  & 0xff) * random.randint(smooth_val,255)//255)
+
+                color = red | green | blue
+
+                pixel_array[row][col] = int(hex(color), 16)
+
+    # get a new surface that consist from pixel_array
+    surf = pixel_array.make_surface()
+    surf.set_colorkey((255,255,255))
+    # 16x16 -> pixel_size * 16 x pixel_size * 16
+    surf = pygame.transform.scale(surf, (pixels_len*pixel_size, pixels_len*pixel_size))
+    if is_rect:
+        surf_rect = surf.get_rect()
+        surf_rect.x = pos[0]
+        surf_rect.y = pos[1]
+        return (surf, surf_rect)
+    else:
+        return surf

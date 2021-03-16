@@ -22,7 +22,7 @@ settings = {
     "chunk_surfaces" : pygame.Surface((TILE_SIZE * CHUNK_LEN, TILE_SIZE/2 * CHUNK_LEN))    
 }
 # dimension of each tiles
-TILE_SIZE = 64
+# TILE_SIZE = 16
 
 # texture of colors
 YELLOW  = (255, 255, 0)
