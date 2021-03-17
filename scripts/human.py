@@ -60,7 +60,8 @@ class Human(pygame.sprite.Sprite):
         # self.image = pygame.transform.scale(self.image, (24,24))
         self.rect = self.image.get_rect()
         self.pos = Vector2(250,250)
-        self.rect.topleft = (250, 250)
+        self.pos.x += (38 * 256) 
+        self.rect.topleft = (250, 250 + (38 * 256))
         self.h = 10
 
         self.is_move = False

@@ -36,7 +36,7 @@ class Chunk(pygame.sprite.Sprite):
         self.groups = chunks_group
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.pos = Vector2(pos[0], pos[1])
-        self.x = (pos[1] * settings["chunk_size"]/2) - (pos[0] * settings["chunk_size"]/2) - settings["tile_size"]/2
+        self.x = (pos[1] * settings["chunk_size"]/2) - (pos[0] * settings["chunk_size"]/2) - settings["tile_size"]/2 + (38 * 256)
         self.y = (pos[1] * settings["chunk_size"]/4) + (pos[0] * settings["chunk_size"]/4)
         self.rect = pygame.Rect(self.x, self.y, settings["chunk_size"], settings["chunk_size"]/2)
         self.collide_visible = False
@@ -65,6 +65,7 @@ def generate_chunk(chunks_group, map_data):
         for c_x in range(len_chunks_h):
             key = (c_x, c_y)
             Chunk(chunks_group, key)
+
             chunks[key] = []
 
     for key in chunks:
@@ -105,7 +106,7 @@ def genNoise(x, y):
     # print(value)
     return value
 
-def generate_map(tile_amount=625, tilesize = TILE_SIZE, freq=0.01, amp=0.5):
+def generate_map(tile_amount=626, tilesize = TILE_SIZE, freq=0.01, amp=0.5):
     tile = None
     map_data = []
     for i in range(tile_amount):
@@ -165,7 +166,7 @@ def draw_map(screen, chunks, camera = None):
     for row in mask_chunk(target_pos.x, target_pos.y):
         for pos in row:
             if pos[0] > -1 and pos[1] > -1:
-                scr_x = (pos[1] * settings["chunk_size"]/2) - (pos[0] * settings["chunk_size"]/2) - settings["tile_size"]/2
+                scr_x = (pos[1] * settings["chunk_size"]/2) - (pos[0] * settings["chunk_size"]/2) - settings["tile_size"]/2 + 38 * 256
                 scr_y = (pos[1] * settings["chunk_size"]/4) + (pos[0] * settings["chunk_size"]/4)
                 screen.blit(get_chunk_surface(chunks[pos[0],pos[1]]),
                             (scr_x + camera.offset.x, scr_y + camera.offset.y))

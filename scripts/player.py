@@ -12,6 +12,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.center = pos
         self.vel = Vector2(0,0)
         self.pos = Vector2(pos)
+        self.pos.x += (38 * 256) 
         self.is_move = False
         self.h = 100
 

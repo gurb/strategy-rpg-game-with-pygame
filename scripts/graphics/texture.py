@@ -64,7 +64,10 @@ def generate_iso_tex(texture=None, color_m=None, w=16, h=8, is_rect=False, pos=(
 
     iso_pixel = pixel_array.make_surface()
     iso_pixel = pygame.transform.scale(iso_pixel, (64, 32))
+
     iso_pixel.set_colorkey((0,0,0))
+    pygame.image.save(iso_pixel, "iso.png")
+
     if is_rect:
         surf_rect = iso_pixel.get_rect()
         surf_rect.x = pos[0]

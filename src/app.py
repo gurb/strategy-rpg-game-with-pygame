@@ -44,6 +44,7 @@ class App:
         self.camera.show_position()
         self.camera.scroll(0.05)
         self.camera.update()
+        self.building.update()
         self.sprites_group.update()
 
     def execute(self):

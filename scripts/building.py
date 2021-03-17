@@ -34,9 +34,13 @@ class Building:
         # Check if the rect collided with the mouse pos
         # and if the left mouse button was pressed.
         if buttons[0]:
-            Mouse = pygame.mouse.get_pos()
+            mouse_pos = pygame.mouse.get_pos()
+            pure = mouse_pos[0] // 64
+            mouse_x = pure * 64
+            pure = mouse_pos[1] // 32
+            mouse_y = pure * 32
             print("olustu")
-            Build(self.app.builds_group, Mouse)
+            Build(self.app.builds_group, (mouse_x, mouse_y))
 
     def draw(self):
         for sprite in self.app.builds_group:
