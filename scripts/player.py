@@ -12,9 +12,9 @@ class Player(pygame.sprite.Sprite):
         self.rect.center = pos
         self.vel = Vector2(0,0)
         self.pos = Vector2(pos)
-        self.pos.x += (38 * 256) 
+        self.pos.x += 20032
         self.is_move = False
-        self.h = 100
+        self.h = 0
 
     def cart_to_iso(self, cart):
         if cart.x == 0:

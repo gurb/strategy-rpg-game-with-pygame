@@ -20,6 +20,13 @@ _textures = {
     'brick' : 0x627269636b
 }
 
+def generate_tex_new_version():
+    surf = pygame.surface((64,32))
+    surf.fill((0,0,0))
+    surf = pygame.draw.polygon(surf, (0,255,0), ((0,16),(32,0),(64,16),(32,32)))
+    return surf
+
+
 def generate_texture_with_pixels(width, height):
     surf = pygame.Surface((32,16))
     surf.fill((0,0,0))
@@ -49,7 +56,7 @@ def generate_iso_tex(texture=None, color_m=None, w=16, h=8, is_rect=False, pos=(
             if iso_pixel.get_at((row, col))[:3] != (0,0,0):
                 if texture:
                     if texture == _textures['grass']:
-                        color = 0x78955A
+                        color = 0x60683a # color = 0x78955A
                     if texture == _textures['dirt']:
                         color = 0x9b7653
                 if color_m:
@@ -125,4 +132,16 @@ def generate_tex(texture=None, color_m=None, pixels_len=16, pixel_size=4, is_rec
         surf_rect.y = pos[1]
         return (surf, surf_rect)
     else:
-        return surf
+        return surf.convert_alpha()
+
+# if __name__ == "__main__":
+#     t = Test(640, 480)
+#     t.bg_color = (255,255,255)
+#     surf = generate_tex_new_version()
+#     surf_pos = (40, 40)
+    
+#     tex_1 = (surf, surf_pos) 
+#     t.add_surface(tex_1)
+
+#     while True:
+#         t.loop()

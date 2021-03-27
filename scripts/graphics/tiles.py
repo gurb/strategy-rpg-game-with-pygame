@@ -6,7 +6,7 @@ RED     = 0xff0000
 BLUE    = 0xff
 GREEN   = 0xff00
 BROWN   = 0x9b7653
-GRASS   = 0x567d46
+GRASS   = 0x60683a #0x567d46
 WATER   = 0x4040ff
 L_WATER = 0x6666fb
 

@@ -23,6 +23,8 @@ class Camera:
         # limit scrolling to map size
         self.offset.x = min(0,self.offset.x) # left
         self.offset.y = min(0,self.offset.y) # top
+        self.offset.x = max(-41600 + self.width, self.offset.x) 
+        self.offset.y = max(-20800 + self.height, self.offset.y) 
 
     def show_position(self):
         # print("camera: {0}".format(-self.offset))
