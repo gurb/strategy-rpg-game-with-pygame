@@ -52,10 +52,9 @@ class Human(pygame.sprite.Sprite):
         self.groups = sprites_group
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.name = name
-        self.image = pygame.Surface([w, h], pygame.SRCALPHA)
-
-
-        self.merge_parts(self.image, run_1)
+        self.image = pygame.Surface([w, h])
+        self.image.set_colorkey(BLACK)
+        # self.merge_parts(self.image, run_1)
 
         # self.image = pygame.transform.scale(self.image, (24,24))
         self.rect = self.image.get_rect()
@@ -63,7 +62,7 @@ class Human(pygame.sprite.Sprite):
         self.pos.x += (20800) 
         self.rect.topleft = (250, 250)
         self.rect.x += 20800
-        self.h = 100
+        self.h = 10
 
         self.is_move = False
 

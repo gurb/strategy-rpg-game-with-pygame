@@ -20,6 +20,9 @@ _textures = {
     'brick' : 0x627269636b
 }
 
+EMPTY_TEXTURE = pygame.Surface((64,32))
+EMPTY_TEXTURE.set_colorkey((0,0,0))
+
 def generate_tex_new_version():
     surf = pygame.surface((64,32))
     surf.fill((0,0,0))
@@ -71,8 +74,10 @@ def generate_iso_tex(texture=None, color_m=None, w=16, h=8, is_rect=False, pos=(
 
     iso_pixel = pixel_array.make_surface()
     iso_pixel = pygame.transform.scale(iso_pixel, (64, 32))
-
     iso_pixel.set_colorkey((0,0,0))
+    foo = pygame.Surface((64,64))
+    foo.set_colorkey((0,0,0))
+    foo.blit(iso_pixel, (0,32))
     pygame.image.save(iso_pixel, "iso.png")
 
     if is_rect:
@@ -81,7 +86,7 @@ def generate_iso_tex(texture=None, color_m=None, w=16, h=8, is_rect=False, pos=(
         surf_rect.y = pos[1]
         return (iso_pixel, surf_rect)
     else:
-        return iso_pixel
+        return foo
 
 
 def generate_tex(texture=None, color_m=None, pixels_len=16, pixel_size=4, is_rect=False, smooth_val = 125, pos = (0,0), obj_array=None, alpha=False):
@@ -132,7 +137,7 @@ def generate_tex(texture=None, color_m=None, pixels_len=16, pixel_size=4, is_rec
         surf_rect.y = pos[1]
         return (surf, surf_rect)
     else:
-        return surf.convert_alpha()
+        return surf
 
 # if __name__ == "__main__":
 #     t = Test(640, 480)

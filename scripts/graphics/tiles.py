@@ -1,3 +1,4 @@
+import os
 from scripts.graphics.texture import *
 # isometric tiles
 
@@ -9,6 +10,11 @@ BROWN   = 0x9b7653
 GRASS   = 0x60683a #0x567d46
 WATER   = 0x4040ff
 L_WATER = 0x6666fb
+
+image_tree = pygame.image.load(os.path.join(os.path.dirname(__file__), 'tree.png'))
+image_house = pygame.image.load(os.path.join(os.path.dirname(__file__), 'house.png'))
+
+
 
 iso_grass_tiles     = []
 iso_dirt_tiles      = []
@@ -23,10 +29,13 @@ iso_l_water_tiles   = []
 # print(water_tiles)
 
 textures = {
+    "empty"    : [EMPTY_TEXTURE],
     "grass"    : iso_grass_tiles,
     "dirt"     : iso_dirt_tiles,
     "water"    : iso_water_tiles,
-    "l_water"  : iso_l_water_tiles
+    "l_water"  : iso_l_water_tiles,
+    "tree"     : [image_tree],
+    "house"    : [image_house]
 }
 
 seed_textures = [random.randint(0, 100) for i in range(100)]

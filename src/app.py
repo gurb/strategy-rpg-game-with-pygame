@@ -31,8 +31,8 @@ class App:
         self.clock = pygame.time.Clock()
         self.display = pygame.display.set_mode((1024, 720))
         self.font = pygame.font.Font(None, 20)
-        self.info_list = {"version": "pre-alpha 0.0.1"}
-        self.is_collide_to_chunk = False
+        self.info_list = {"version": "proof-of-concept"}
+        self.fps = 400
 
     def get_info(self):
         for i, key in enumerate(self.info_list):
@@ -43,17 +43,20 @@ class App:
 
     def generate(self):
         self.sprites_group = pygame.sprite.Group()
-        self.chunks_group = pygame.sprite.Group()
+        self.chunks_group = pygame.sprite.LayeredUpdates()
         self.builds_group = pygame.sprite.Group()
         self.tiles_group = pygame.sprite.Group()
         self.player = Player(self.sprites_group, (0,0), (25,25), (0,0,255))
         self.human = Human(self.sprites_group, "test_1")
         self.visible_chunks = []
-        self.chunks = generate_chunk(self.chunks_group, self.tiles_group, generate_map())
+        self.chunks = generate_chunk(self.chunks_group, self.tiles_group, generate_map(), 1)
+        self.empty_chunks = generate_chunk(self.chunks_group, self.tiles_group, generate_map(), 2, True)
+        self.chunks_list = [self.chunks, self.empty_chunks]
         self.camera = Camera(self.human, 1024, 720, self.chunks_group)
         self.map_rect = Map(self, (0,0))
         self.building = Building(self)
 
+        self.is_collide_to_chunk = False
 
         self.e1 = Entity(self.sprites_group, (50,50))
 
@@ -68,7 +71,8 @@ class App:
 
     def draw(self):
         self.display.fill((0,0,0))
-        draw_map(self, self.display, self.chunks, self.camera)
+        draw_map(self, self.display, self.chunks_list, self.camera)
+        # draw_map(self, self.display, self.empty_chunks, self.camera)
         self.building.draw()
         for sprite in self.sprites_group:
             self.display.blit(sprite.image, sprite.rect.topleft + self.camera.offset)
@@ -85,11 +89,12 @@ class App:
         self.info_list["building"] = self.building.active
         self.info_list["chunk_pos"] = self.building.chunk_pos
         self.info_list["tile_pos"]  = self.building.tile_pos
-
+        self.info_list["FPS"] = self.clock.get_fps()
+       
     def execute(self):
         self.running = True
         while self.running:
-            self.clock.tick(60)
+            self.dt = self.clock.tick() / 1000
             self.handle_event()
             self.draw()
             self.update()
