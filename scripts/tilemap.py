@@ -17,7 +17,7 @@ settings = {
     "screen_height" : 480,
     "chunk_len" : CHUNK_LEN,
     "tile_size" : TILE_SIZE,                # 64
-    "tile_area" : pygame.Surface((64, 64)),
+    "tile_area" : pygame.Surface((64, 64), pygame.SRCALPHA),
     "tile_surface" : pygame.Surface((64, 64)),
     "chunk_size" : TILE_SIZE * CHUNK_LEN,   # 256
     "chunks_x_axis" : 640 / (3 * 64),
@@ -38,7 +38,7 @@ BLUE    = (0 , 0, 255)
 GREEN   = (0, 255, 0)
 BROWN   = (160, 82, 45)
 BLACK   = (0, 0, 0)
-DARK_GRAY   = (32,32,32)
+DARK_GRAY   = (32,32,32,60)
 
 pygame.draw.polygon(settings["tile_area"], DARK_GRAY, (
     (0, 48),
@@ -47,8 +47,7 @@ pygame.draw.polygon(settings["tile_area"], DARK_GRAY, (
     (32, 64)
     ),1
 )
-settings["tile_area"].set_colorkey((0,0,0))
-settings["tile_surface"].set_colorkey((0,0,0))
+
 def get_tile_surface(color_m, pos):
     xy = (color_m[1] + color_m[2]) % 255
     color = (color_m[1],color_m[2],xy)
@@ -165,15 +164,6 @@ def generate_chunk(chunks_group, tiles_group, map_data, layer, empty=False):
         
     return chunks
 
-# def generate_map():
-#     map_data = []
-#     tiles = [1, 2]
-#     for i in range(500):
-#         map_data.append([])
-#         for j in range(500):
-#             map_data[i].append(tiles[random.randint(0,1)])
-#     return map_data
-
 def genNoise(x, y):
     value = 0
     value += Noise(x * 0.005, y * 0.005) * 1.0
@@ -222,32 +212,8 @@ def get_chunk_surface(chunk, layer=0):
     return settings["chunk_surfaces"]
 
 def draw_map(app, screen, chunks_list, camera = None):
-    start_x = (camera.target.pos.x) // settings["chunk_size"]
-    # we divide it with 2 for isometric
-    start_y = (camera.target.pos.y) // settings["chunk_size"]/2
-
-    start_x, start_y = round(start_x), round(start_y)
-    
-    # get_info(start_x, "start_x")
-    # get_info(start_y, "start_y")
-
-    end_x = round(start_x + 640 / settings["chunk_size"])
-    end_y = round(start_y + 480 / settings["chunk_size"] / 2)
-
-    # get_info(end_x, "end_x")
-    # get_info(end_y, "end_y")
-
-    center_x, center_y = round((start_x + end_x) / 2), round((start_y + end_y) / 2)
-    # get_info(center_x, "center_x")
-    # get_info(center_y, "center_y")
-    
-    # get_info(mask_chunk(center_x, center_y), "mask")
     target_pos = camera.focus_chunk.pos
-    
-    # mask_chunk(x, y)
-
     app.visible_chunks = mask_chunk(target_pos.x, target_pos.y)
-
     
     for row in mask_chunk(target_pos.x, target_pos.y):
         for pos in row:
@@ -262,14 +228,6 @@ def draw_map(app, screen, chunks_list, camera = None):
                             (scr_x + camera.offset.x, scr_y + camera.offset.y))
                 # pygame.image.save(get_chunk_surface(chunks[pos[0],pos[1]]), "chunk_image.png")
                 # screen.blit(settings["chunk_area"], (scr_x + camera.offset.x, scr_y + camera.offset.y))
-
-    # for y in range(start_y - 10, start_y + 10):
-    #     for x in range(start_x - 10, start_x + 10):
-    #         if x > -1 and y > -1:
-    #             scr_x = (y * settings["chunk_size"]/2) - (x * settings["chunk_size"]/2) - settings["tile_size"]/2
-    #             scr_y = (y * settings["chunk_size"]/4) + (x * settings["chunk_size"]/4)
-    #             screen.blit(get_chunk_surface(chunks[x,y]),
-    #                         (scr_x + camera.offset.x, scr_y + camera.offset.y))
 
 def gen_visible_chunks(chunks):
     visible_chunks_list = []

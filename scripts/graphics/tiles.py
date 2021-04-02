@@ -14,8 +14,6 @@ L_WATER = 0x6666fb
 image_tree = pygame.image.load(os.path.join(os.path.dirname(__file__), 'tree.png'))
 image_house = pygame.image.load(os.path.join(os.path.dirname(__file__), 'house.png'))
 
-
-
 iso_grass_tiles     = []
 iso_dirt_tiles      = []
 iso_water_tiles     = []

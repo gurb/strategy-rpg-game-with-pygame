@@ -24,9 +24,9 @@ EMPTY_TEXTURE = pygame.Surface((64,32))
 EMPTY_TEXTURE.set_colorkey((0,0,0))
 
 def generate_tex_new_version():
-    surf = pygame.surface((64,32))
+    surf = pygame.Surface((64,64))
     surf.fill((0,0,0))
-    surf = pygame.draw.polygon(surf, (0,255,0), ((0,16),(32,0),(64,16),(32,32)))
+    pygame.draw.polygon(surf, (0,255,0), ((0,48),(32,32),(64,48),(32,64)),6)
     return surf
 
 
