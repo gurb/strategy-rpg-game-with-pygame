@@ -7,6 +7,8 @@ from scripts.human import Human
 from scripts.building import Building
 from scripts.tilemap import *
 from scripts.camera import Camera
+from scripts.gui import Canvas, Text, Button
+from scripts.graphics.tiles import Loader
 
 class Entity(pygame.sprite.Sprite):
     def __init__(self, sprite_groups, pos):
@@ -29,7 +31,7 @@ class App:
     def __init__(self):
         pygame.init()
         self.clock = pygame.time.Clock()
-        self.display = pygame.display.set_mode((1024, 720))
+        self.display = pygame.display.set_mode((1024, 720), pygame.HWSURFACE)
         self.font = pygame.font.Font(None, 20)
         self.info_list = {"version": "proof-of-concept"}
         self.fps = 400
@@ -42,9 +44,11 @@ class App:
             self.display.blit(text, text_rect)
 
     def generate(self):
+        self.loader = Loader()
         self.sprites_group = pygame.sprite.Group()
         self.chunks_group = pygame.sprite.LayeredUpdates()
         self.builds_group = pygame.sprite.Group()
+        self.canvas_group = pygame.sprite.Group()
         self.tiles_group = pygame.sprite.Group()
         self.player = Player(self.sprites_group, (0,0), (25,25), (0,0,255))
         self.human = Human(self.sprites_group, "test_1")
@@ -54,6 +58,10 @@ class App:
         self.chunks_list = [self.chunks, self.empty_chunks]
         self.camera = Camera(self.human, 1024, 720, self.chunks_group)
         self.map_rect = Map(self, (0,0))
+        self.building_canvas = Canvas(self, (48,500), (900,200), None, 255, (101,67,33))
+        # self.building_canvas.add_text("hello ...")
+        self.building_canvas.add_button("house", (5,5), (90,30), (255,255,255))
+        self.building_canvas.add_button("tree", (5,40), (90,30), (255,255,255))
         self.building = Building(self)
 
         self.is_collide_to_chunk = False
@@ -69,6 +77,13 @@ class App:
                     if self.building.active: self.building.active = False
                     else: self.building.active = True
 
+
+    def button_controller(self):
+        if self.building_canvas.button_objs[0].clicked: 
+            self.building.building_type = "house"
+        if self.building_canvas.button_objs[1].clicked: 
+            self.building.building_type = "tree"
+
     def draw(self):
         self.display.fill((0,0,0))
         draw_map(self, self.display, self.chunks_list, self.camera)
@@ -76,14 +91,20 @@ class App:
         self.building.draw()
         for sprite in self.sprites_group:
             self.display.blit(sprite.image, sprite.rect.topleft + self.camera.offset)
+        self.canvas_group.draw(self.display)
         self.get_info()
+        
     def update(self):
+        self.buttons = pygame.mouse.get_pressed()
+        self.mouse_pos = pygame.mouse.get_pos()
         self.camera.show_position()
         self.camera.scroll()
         self.camera.update()
         self.building.update()
         self.sprites_group.update()
+        self.canvas_group.update()
         self.update_infos()        
+        self.button_controller()
 
     def update_infos(self):
         self.info_list["building"] = self.building.active

@@ -203,8 +203,8 @@ def get_chunk_surface(chunk, layer=0):
             scr_x = (y * settings["tile_size"]/2) - (x * settings["tile_size"]/2)
             scr_y = (y * settings["tile_size"]/4) + (x * settings["tile_size"]/4) + 32
             settings["chunk_surfaces"].blit(textures[tile][0], (scr_x + (settings["chunk_size"]/2 - 32), scr_y))
-            if layer == 0: 
-                settings["chunk_surfaces"].blit(settings["tile_area"], (scr_x + (settings["chunk_size"]/2 - 32), scr_y))
+            # if layer == 0: 
+            #     settings["chunk_surfaces"].blit(settings["tile_area"], (scr_x + (settings["chunk_size"]/2 - 32), scr_y))
 
             # tile grid
      

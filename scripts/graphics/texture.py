@@ -49,7 +49,11 @@ def generate_texture_with_pixels(width, height):
     surf.set_colorkey((0,0,0))
     return surf
 
-def generate_iso_tex(texture=None, color_m=None, w=16, h=8, is_rect=False, pos=(0,0), smooth_val=230):
+
+DARK_GRAY   = (0,100,0,60)
+
+# smooth_val 230
+def generate_iso_tex(texture=None, color_m=None, w=16, h=8, is_rect=False, pos=(0,0), smooth_val=230, grid=False):
     iso_pixel = generate_texture_with_pixels(w, h)
     pixel_array = pygame.PixelArray(iso_pixel)
     # print("pixel_value : {0}".format(pixel_array[0][0]))
@@ -78,7 +82,17 @@ def generate_iso_tex(texture=None, color_m=None, w=16, h=8, is_rect=False, pos=(
     foo = pygame.Surface((64,64))
     foo.set_colorkey((0,0,0))
     foo.blit(iso_pixel, (0,32))
-    pygame.image.save(iso_pixel, "iso.png")
+    # pygame.image.save(iso_pixel, "iso.png")
+
+
+    if grid:
+        pygame.draw.polygon(foo, DARK_GRAY, (
+            (0, 48),
+            (32,32),
+            (64, 48),
+            (32, 64)
+            ),1
+        )
 
     if is_rect:
         surf_rect = iso_pixel.get_rect()
@@ -138,15 +152,3 @@ def generate_tex(texture=None, color_m=None, pixels_len=16, pixel_size=4, is_rec
         return (surf, surf_rect)
     else:
         return surf
-
-# if __name__ == "__main__":
-#     t = Test(640, 480)
-#     t.bg_color = (255,255,255)
-#     surf = generate_tex_new_version()
-#     surf_pos = (40, 40)
-    
-#     tex_1 = (surf, surf_pos) 
-#     t.add_surface(tex_1)
-
-#     while True:
-#         t.loop()

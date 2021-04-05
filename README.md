@@ -4,11 +4,13 @@ The game map's generated via perlin noise like nature of the world. Some op-
 timizations are implemented to the game to obtain better performance. 
 
 ## 📅 to do list
-❌ reduce the CPU usage of the game (the RAM usage seems stable) 
-❌ loading screen
-❌ auto-tiling
-❌ add a minimap when will open the character moved
-🔃 add some buildings and trees(collideable) (as generated)
+- ❌ reduce the CPU usage of the game (the RAM usage seems stable) 
+- ❌ loading screen
+- ❌ auto-tiling
+- ❌ add a minimap when will open the character moved
+- 🔃 add some buildings and trees(collideable) (as generated)
+- 🔃 add gui (canvas, text, button)
+- ❌ add inventory
 
 ## 📝building system 
 - we can use mask for each chunk and we could make it tileable building on the map

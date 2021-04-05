@@ -5,17 +5,7 @@ from scripts.tilemap import gen_visible_chunks, settings
 
 from pygame.math import Vector2
 
-class Build(pygame.sprite.Sprite):
-    def __init__(self, builds_group, pos):
-        self.groups = builds_group
-        pygame.sprite.Sprite.__init__(self, self.groups)
-        self.pos = pos
-        self.type = 1 # tree as default
-        self.rect = pygame.Rect(self.pos[0], self.pos[1], 32, 32)
-        self.rect.midtop = self.pos
-        
-        # tiles effect
-
+    
 class Building:
     def __init__(self, app):
         self.app = app
@@ -91,7 +81,7 @@ class Building:
             self.chunk_area.blit(self.useless_selected_area, (-scr_x-32, scr_y))
         else:
             self.chunk_area.blit(self.selected_area, (-scr_x-32, scr_y))
-        self.app.display.blit(self.chunk_area, self.choosen_rect.topleft + self.app.camera.offset)
+        # self.app.display.blit(self.chunk_area, self.choosen_rect.topleft + self.app.camera.offset)
 
     def select(self):
         self.mouse_pos = pygame.mouse.get_pos()
@@ -115,8 +105,5 @@ class Building:
                                     )
 
     def draw(self):
-        for sprite in self.app.builds_group:
-            self.app.display.blit(
-                self.buildings[sprite.type]["image"],
-                (sprite.rect.x + 20800 + self.app.camera.offset.x, sprite.rect.y + self.app.camera.offset.y)
-            )
+        if self.choosen_rect:
+            self.app.display.blit(self.chunk_area, self.choosen_rect.topleft + self.app.camera.offset)
