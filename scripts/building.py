@@ -64,13 +64,14 @@ class Building:
             self.build()
 
     def build(self):
-        buttons = pygame.mouse.get_pressed()
-        if buttons[0] and self.relative_tile_position and self.chunk_pos:
-            pos_0 = self.relative_tile_position[0]
-            pos_1 = self.relative_tile_position[1]
-            print(str(self.chunk_pos) + str(self.relative_tile_position))
-            self.app.empty_chunks[(int(self.chunk_pos[1]),int(self.chunk_pos[0]))][pos_0][pos_1] = self.building_type
-            print(str(self.chunk_pos) + str(self.relative_tile_position))
+        if self.app.ownership_of_sprite == None:
+            buttons = pygame.mouse.get_pressed()
+            if buttons[0] and self.relative_tile_position and self.chunk_pos:
+                pos_0 = self.relative_tile_position[0]
+                pos_1 = self.relative_tile_position[1]
+                print(str(self.chunk_pos) + str(self.relative_tile_position))
+                self.app.empty_chunks[(int(self.chunk_pos[1]),int(self.chunk_pos[0]))][pos_0][pos_1] = self.building_type
+                print(str(self.chunk_pos) + str(self.relative_tile_position))
     
     def effect(self):
         self.chunk_area.fill((0,0,0,0)) # clear the chunk area

@@ -35,6 +35,7 @@ class App:
         self.font = pygame.font.Font(None, 20)
         self.info_list = {"version": "proof-of-concept"}
         self.fps = 400
+        self.ownership_of_sprite = None
 
     def get_info(self):
         for i, key in enumerate(self.info_list):
@@ -93,10 +94,18 @@ class App:
             self.display.blit(sprite.image, sprite.rect.topleft + self.camera.offset)
         self.canvas_group.draw(self.display)
         self.get_info()
-        
+    
+    def change_ownership(self):
+        for sprite in self.canvas_group:
+            if sprite.rect.collidepoint(self.mouse_pos):
+                self.ownership_of_sprite = sprite
+            else:
+                self.ownership_of_sprite = None
+
     def update(self):
         self.buttons = pygame.mouse.get_pressed()
         self.mouse_pos = pygame.mouse.get_pos()
+        self.change_ownership()
         self.camera.show_position()
         self.camera.scroll()
         self.camera.update()
