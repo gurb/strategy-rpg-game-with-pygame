@@ -6,7 +6,8 @@ from utils.colors import *
 ## 48x48
 
 class Human(pygame.sprite.Sprite):
-    def __init__(self, sprites_group, name, w=48, h=48):
+    def __init__(self, app, sprites_group, name, w=48, h=48):
+        self.app = app
         self.groups = sprites_group
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.name = name
@@ -20,7 +21,7 @@ class Human(pygame.sprite.Sprite):
         self.pos.x += (20800) 
         self.rect.topleft = (250, 250)
         self.rect.x += 20800
-        self.h = 10
+        self.h = 2000
 
         self.is_move = False
 
@@ -61,6 +62,6 @@ class Human(pygame.sprite.Sprite):
             self.is_move = False
     
     def move(self, v):
-        self.pos.x += v.x
-        self.pos.y += v.y
+        self.pos.x += v.x * self.app.dt
+        self.pos.y += v.y * self.app.dt
         self.is_move = True

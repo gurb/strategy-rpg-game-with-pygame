@@ -1,11 +1,16 @@
 import os
+import time
 import pygame
 from pygame.math import Vector2
 import random
 import math
 
-from scripts.graphics.tiles import *
+import itertools
+from multiprocessing.pool import ThreadPool
+
 from scripts.algorithms.perlin import Noise
+
+from scripts.graphics.tiles import *
 
 from utils.funcs import get_info
 
@@ -74,8 +79,8 @@ def create_mask():
 
 
 settings["chunk_mask"] = create_mask()
-for key in settings["colors_pos"]:
-    print("key[{0}] : {1}".format(key, settings["colors_pos"][key]))
+# for key in settings["colors_pos"]:
+#     print("key[{0}] : {1}".format(key, settings["colors_pos"][key]))
 pygame.image.save(settings["chunk_mask"], "chunk_mask.png")
 
 
@@ -120,13 +125,26 @@ class Tile(pygame.sprite.Sprite):
         self.collide_visible = False
         self.visible = False
 
+# 5x5 chunks
+# def mask_chunk(x, y):
+#     return [
+#         [(x-2, y-2), (x-1, y-2), (x, y-2), (x+1, y-2), (x+2, y-2)],
+#         [(x-2, y-1), (x-1, y-1), (x, y-1), (x+1, y-1), (x+2, y-1)],
+#         [(x-2, y),  (x-1, y), (x, y), (x+1, y), (x+2, y)],
+#         [(x-2, y+1), (x-1, y+1), (x, y+1), (x+1, y+1), (x+2, y+1)],
+#         [(x-2, y+2), (x-1, y+2), (x, y+2), (x+1, y+2), (x+2, y+2)]        
+#     ]
+
+# 7x7 chunks
 def mask_chunk(x, y):
     return [
-        [(x-2, y-2), (x-1, y-2), (x, y-2), (x+1, y-2), (x+2, y-2)],
-        [(x-2, y-1), (x-1, y-1), (x, y-1), (x+1, y-1), (x+2, y-1)],
-        [(x-2, y),  (x-1, y), (x, y), (x+1, y), (x+2, y)],
-        [(x-2, y+1), (x-1, y+1), (x, y+1), (x+1, y+1), (x+2, y+1)],
-        [(x-2, y+2), (x-1, y+2), (x, y+2), (x+1, y+2), (x+2, y+2)]        
+        [(x-3, y-3), (x-2, y-3), (x-1, y-3), (x, y-3), (x+1, y-3), (x+2, y-3), (x+3, y-3)],
+	    [(x-3, y-2), (x-2, y-2), (x-1, y-2), (x, y-2), (x+1, y-2), (x+2, y-2), (x+3, y-2)],
+        [(x-3, y-1), (x-2, y-1), (x-1, y-1), (x, y-1), (x+1, y-1), (x+2, y-1), (x+3, y-1)],
+        [(x-3, y), (x-2, y),  (x-1, y), (x, y), (x+1, y), (x+2, y), (x+3, y)],
+        [(x-3, y+1), (x-2, y+1), (x-1, y+1), (x, y+1), (x+1, y+1), (x+2, y+1), (x+3, y+1)],
+        [(x-3, y+2), (x-2, y+2), (x-1, y+2), (x, y+2), (x+1, y+2), (x+2, y+2), (x+3, y+2)],
+	    [(x-3, y+3), (x-2, y+3), (x-1, y+3), (x, y+3), (x+1, y+3), (x+2, y+3), (x+3, y+3)]
     ]
 
 def generate_chunk(chunks_group, tiles_group, map_data, layer, empty=False):
@@ -139,7 +157,7 @@ def generate_chunk(chunks_group, tiles_group, map_data, layer, empty=False):
     len_chunks_h = len_tiles_h // settings["chunk_len"]
 
     for c_y in range(len_chunks_w):
-        chunk_data = []            
+        # chunk_data = []            
         for c_x in range(len_chunks_h):
             key = (c_x, c_y)
             Chunk(chunks_group, key, layer)
@@ -150,51 +168,27 @@ def generate_chunk(chunks_group, tiles_group, map_data, layer, empty=False):
             row = []
             for x in range(settings["chunk_len"]):
                 tile_position = (key[0] * settings["chunk_len"] + x, key[1] * settings["chunk_len"] + y)
-                if empty: row.append('empty') # it is just for the creating an empty map
-                else: row.append(map_data[tile_position[1]][tile_position[0]])
+                row.append(map_data[tile_position[1]][tile_position[0]])
             chunks[key].append(row)
 
         # create chunk
 
     # for key, value in chunks.items():
     #     chunks[key] = get_chunk_surface(chunks[key])
-    if empty:
-        for key, value in chunks.items():
-            print(str(key) + ": " + str(value))
+
         
     return chunks
 
-def genNoise(x, y):
-    value = 0
-    value += Noise(x * 0.005, y * 0.005) * 1.0
-    value += Noise(x * 0.025, y * 0.025) * .5 
-    value += Noise(x * 0.05, y * 0.05) * 0.25
-    # print("sdfdsf")
-    # print(value)
-    return value
+# def genNoise(x, y):
+#     value = 0
+#     value += Noise(x * 0.005, y * 0.005) * 1.0
+#     value += Noise(x * 0.025, y * 0.025) * .5 
+#     value += Noise(x * 0.05, y * 0.05) * 0.25
+#     # print("sdfdsf")
+#     # print(value)
+#     return value
 
-def generate_map(tile_amount=650, tilesize = TILE_SIZE, freq=0.01, amp=0.5):
-    tile = None
-    map_data = []
-    for i in range(tile_amount):
-        map_data.append([])
-        for j in range(tile_amount):
-            # n = Noise(i*freq, j*freq) * amp
-            n = genNoise(i, j)
-            # if n >= 0.7 and n < 1.0:
-            if n < -0.05:
-                map_data[i].append('water')
-            # n >= 0.65 and n < 0.7
-            elif n < 0.0:
-                map_data[i].append('l_water')
-            # elif n >= 0.6 and n < 0.65:
-            elif n < 0.05:
-                map_data[i].append('dirt')
-            else:
-                map_data[i].append('grass')
-            # convert to hex from string value
 
-    return map_data
 
 def get_chunk_surface(chunk, layer=0):
     settings["chunk_surfaces"].fill((0,0,0))
@@ -223,9 +217,12 @@ def draw_map(app, screen, chunks_list, camera = None):
                 # layer 0 of the map
                 screen.blit(get_chunk_surface(chunks_list[0][pos[0],pos[1]], 0),
                             (scr_x + camera.offset.x, scr_y + camera.offset.y))
+                # filter of layer 0's chunks (generated via perlin noise)
+                screen.blit(textures["chunk_filter"][0], (scr_x + camera.offset.x, scr_y + camera.offset.y + 64))
                 # layer 1 of the map
                 screen.blit(get_chunk_surface(chunks_list[1][pos[0],pos[1]], 1),
                             (scr_x + camera.offset.x, scr_y + camera.offset.y))
+                
                 # pygame.image.save(get_chunk_surface(chunks[pos[0],pos[1]]), "chunk_image.png")
                 # screen.blit(settings["chunk_area"], (scr_x + camera.offset.x, scr_y + camera.offset.y))
 
@@ -243,3 +240,115 @@ def gen_visible_chunks(chunks):
                 visible_chunks_list.append((settings["chunk_area"], chunk_rect))
                 visible_chunks_masks_list.append((settings["chunk_mask_image"], chunk_rect, (pos[1], pos[0])))
     return (visible_chunks_list, visible_chunks_masks_list)
+
+
+def genNoise(x, y):
+    value = 0
+    value += Noise(x * 0.005, y * 0.005) * 1.0
+    value += Noise(x * 0.025, y * 0.025) * .5 
+    value += Noise(x * 0.05, y * 0.05) * 0.25
+    return value
+
+def genNoise_jungle(x, y):
+    value = 0
+    value += Noise(x * 0.2, y * 0.2)
+    return value
+    # return Noise(x * 0.2, y * 0.2) + (Noise(x * 0.05, y * 0.05) * 0.25)
+
+# params = [
+#     [x * 0.005, 1.0],
+#     [x * 0.025, 0.5],
+#     [x *0.050, 0.25]
+# ]
+
+# def genNoise_with_mp(x, y):
+#     p = Pool()
+#     p.map(Noise, )
+#     value = 0
+#     value += Noise(x * 0.005, y * 0.005) * 1.0
+#     value += Noise(x * 0.025, y * 0.025) * .5 
+#     value += Noise(x * 0.05, y * 0.05) * 0.25
+#     return value
+
+
+def generate_map(layer=0, tile_amount=650, tilesize = TILE_SIZE, freq=0.01, amp=0.5):
+    tile = None
+    map_data = []
+    for i in range(tile_amount):
+        map_data.append([])
+        for j in range(tile_amount):
+            # n = Noise(i*freq, j*freq) * amp
+            n = genNoise(i, j)
+            # if n >= 0.7 and n < 1.0:
+            if layer==0:
+                if n < -0.05:
+                    map_data[i].append('water')
+                # n >= 0.65 and n < 0.7
+                elif n < 0.0:
+                    map_data[i].append('l_water')
+                # elif n >= 0.6 and n < 0.65:
+                elif n < 0.05:
+                    map_data[i].append('dirt')
+                else:
+                    map_data[i].append('grass')
+            if layer==1:
+                if 0.05 < n:
+                    m = genNoise_jungle(i, j)
+                    if -0.2 < m and m < -0.15:
+                        d = random.randint(0,1)
+                        if d==0: map_data[i].append('stone')
+                        elif d==1: map_data[i].append('stone-2')
+                    elif 0.31 < m:
+                        d = random.randint(0,2)
+                        if d==0: map_data[i].append('tree-1')
+                        elif d==1: map_data[i].append('tree-2')
+                        else: map_data[i].append('pine')
+                    else:
+                        map_data[i].append('empty')
+                elif n < 0.05:
+                    map_data[i].append('empty')
+            # convert to hex from string value
+    return map_data
+
+def get_data(pos):
+    n = genNoise(pos[0], pos[1])
+    if n < -0.05:
+        return "water"
+    # n >= 0.65 and n < 0.7
+    elif n < 0.0:
+        return "l_water"
+    # elif n >= 0.6 and n < 0.65:
+    elif n < 0.05:
+        return 'dirt'
+    else:
+        return 'grass'
+
+# def generate_map_with_mpp(tile_amount = 650):
+#     i = range(650)
+#     j = range(650)
+#     paramlist = list(itertools.product(i,j))
+#     print(paramlist)
+#     pool = multiprocessing.Pool(processes=8)
+    
+#     return list(pool.map(get_data, paramlist))
+
+
+def generate_map_with_mpp(tile_amount = 650, is_empty=False):
+    i = range(650)
+    j = range(650)
+    paramlist = list(itertools.product(i,i))
+    pool = ThreadPool(processes=2)
+    map_2d = []
+    start = False
+    for i, tile in enumerate(pool.map(get_data, paramlist)):
+        if i % 650 == 0 and i != 0:
+            map_2d.append(row)
+            row = []
+        elif i!=0: 
+            if is_empty: row.append('empty')
+            else: row.append(tile)
+        else: row = []            
+    return map_2d
+
+if __name__ == "__main__":
+    genNoise()

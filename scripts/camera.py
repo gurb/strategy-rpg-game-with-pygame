@@ -11,7 +11,7 @@ class Camera:
         self.focus_chunk = None
         self.chunks_group = chunks_group
         for chunk in self.chunks_group:
-            print(chunk.pos)
+            # print(chunk.pos)
             if self.target.rect.colliderect(chunk.rect):
                 self.focus_chunk = chunk
 

@@ -69,9 +69,9 @@ class Building:
             if buttons[0] and self.relative_tile_position and self.chunk_pos:
                 pos_0 = self.relative_tile_position[0]
                 pos_1 = self.relative_tile_position[1]
-                print(str(self.chunk_pos) + str(self.relative_tile_position))
+                # print(str(self.chunk_pos) + str(self.relative_tile_position))
                 self.app.empty_chunks[(int(self.chunk_pos[1]),int(self.chunk_pos[0]))][pos_0][pos_1] = self.building_type
-                print(str(self.chunk_pos) + str(self.relative_tile_position))
+                # print(str(self.chunk_pos) + str(self.relative_tile_position))
     
     def effect(self):
         self.chunk_area.fill((0,0,0,0)) # clear the chunk area
@@ -93,17 +93,22 @@ class Building:
         for surface, rect, chunk_pos in self.visible_chunks_masks[1]:
             if rect.collidepoint(self.screen_to_world):
                 self.relative_offset = ((self.mouse_pos[0] - rect.x - int(self.app.camera.offset.x))%640, (self.mouse_pos[1] - rect.y - int(self.app.camera.offset.y))%320)
+
                 color = surface.get_at(self.relative_offset)
+                
                 if color == (255,0,0,255) or color == (0,0,255,255) or color == (255,255,0,255) or color == (0,255,0,255): pass
                 else:
                     self.color = surface.get_at(self.relative_offset)
                     self.chunk_pos = chunk_pos
                     self.choosen_rect = rect
                     self.relative_tile_position = (settings["colors_pos"][self.color[:3]][0], settings["colors_pos"][self.color[:3]][1])
+
                     self.tile_pos =  (
                                         self.chunk_pos[0] * 10 + settings["colors_pos"][self.color[:3]][0],
                                         self.chunk_pos[1] * 10 + settings["colors_pos"][self.color[:3]][1]
                                     )
+                
+
 
     def draw(self):
         if self.choosen_rect:
