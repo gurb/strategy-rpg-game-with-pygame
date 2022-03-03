@@ -139,12 +139,12 @@ class Tile(pygame.sprite.Sprite):
 def mask_chunk(x, y):
     return [
         [(x-3, y-3), (x-2, y-3), (x-1, y-3), (x, y-3), (x+1, y-3), (x+2, y-3), (x+3, y-3)],
-	    [(x-3, y-2), (x-2, y-2), (x-1, y-2), (x, y-2), (x+1, y-2), (x+2, y-2), (x+3, y-2)],
+	[(x-3, y-2), (x-2, y-2), (x-1, y-2), (x, y-2), (x+1, y-2), (x+2, y-2), (x+3, y-2)],
         [(x-3, y-1), (x-2, y-1), (x-1, y-1), (x, y-1), (x+1, y-1), (x+2, y-1), (x+3, y-1)],
         [(x-3, y), (x-2, y),  (x-1, y), (x, y), (x+1, y), (x+2, y), (x+3, y)],
         [(x-3, y+1), (x-2, y+1), (x-1, y+1), (x, y+1), (x+1, y+1), (x+2, y+1), (x+3, y+1)],
         [(x-3, y+2), (x-2, y+2), (x-1, y+2), (x, y+2), (x+1, y+2), (x+2, y+2), (x+3, y+2)],
-	    [(x-3, y+3), (x-2, y+3), (x-1, y+3), (x, y+3), (x+1, y+3), (x+2, y+3), (x+3, y+3)]
+	[(x-3, y+3), (x-2, y+3), (x-1, y+3), (x, y+3), (x+1, y+3), (x+2, y+3), (x+3, y+3)]
     ]
 
 def generate_chunk(chunks_group, tiles_group, map_data, layer, empty=False):
@@ -170,24 +170,8 @@ def generate_chunk(chunks_group, tiles_group, map_data, layer, empty=False):
                 tile_position = (key[0] * settings["chunk_len"] + x, key[1] * settings["chunk_len"] + y)
                 row.append(map_data[tile_position[1]][tile_position[0]])
             chunks[key].append(row)
-
-        # create chunk
-
-    # for key, value in chunks.items():
-    #     chunks[key] = get_chunk_surface(chunks[key])
-
         
     return chunks
-
-# def genNoise(x, y):
-#     value = 0
-#     value += Noise(x * 0.005, y * 0.005) * 1.0
-#     value += Noise(x * 0.025, y * 0.025) * .5 
-#     value += Noise(x * 0.05, y * 0.05) * 0.25
-#     # print("sdfdsf")
-#     # print(value)
-#     return value
-
 
 
 def get_chunk_surface(chunk, layer=0):
@@ -197,10 +181,6 @@ def get_chunk_surface(chunk, layer=0):
             scr_x = (y * settings["tile_size"]/2) - (x * settings["tile_size"]/2)
             scr_y = (y * settings["tile_size"]/4) + (x * settings["tile_size"]/4) + 32
             settings["chunk_surfaces"].blit(textures[tile][0], (scr_x + (settings["chunk_size"]/2 - 32), scr_y))
-            # if layer == 0: 
-            #     settings["chunk_surfaces"].blit(settings["tile_area"], (scr_x + (settings["chunk_size"]/2 - 32), scr_y))
-
-            # tile grid
      
     settings["chunk_surfaces"].set_colorkey((0,0,0))
     return settings["chunk_surfaces"]
@@ -222,9 +202,7 @@ def draw_map(app, screen, chunks_list, camera = None):
                 # layer 1 of the map
                 screen.blit(get_chunk_surface(chunks_list[1][pos[0],pos[1]], 1),
                             (scr_x + camera.offset.x, scr_y + camera.offset.y))
-                
-                # pygame.image.save(get_chunk_surface(chunks[pos[0],pos[1]]), "chunk_image.png")
-                # screen.blit(settings["chunk_area"], (scr_x + camera.offset.x, scr_y + camera.offset.y))
+
 
 def gen_visible_chunks(chunks):
     visible_chunks_list = []
@@ -322,15 +300,6 @@ def get_data(pos):
         return 'dirt'
     else:
         return 'grass'
-
-# def generate_map_with_mpp(tile_amount = 650):
-#     i = range(650)
-#     j = range(650)
-#     paramlist = list(itertools.product(i,j))
-#     print(paramlist)
-#     pool = multiprocessing.Pool(processes=8)
-    
-#     return list(pool.map(get_data, paramlist))
 
 
 def generate_map_with_mpp(tile_amount = 650, is_empty=False):
